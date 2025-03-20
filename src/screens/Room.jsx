@@ -15,6 +15,7 @@ const RoomPage = () => {
 
   const handleUserJoined = useCallback(({ email, id }) => {
     console.log(`Email ${email} joined room`);
+    console.log('Remote Socket ID:', id);
     setRemoteSocketId(id);
   }, []);
 
@@ -43,6 +44,7 @@ const RoomPage = () => {
     [socket]
   );
 
+
   const sendStreams = useCallback(() => {
     for (const track of myStream.getTracks()) {
       peer.peer.addTrack(track, myStream);
@@ -70,6 +72,7 @@ const RoomPage = () => {
     };
   }, [handleNegoNeeded]);
 
+
   const handleNegoNeedIncomming = useCallback(
     async ({ from, offer }) => {
       const ans = await peer.getAnswer(offer);
@@ -86,8 +89,10 @@ const RoomPage = () => {
     peer.peer.addEventListener('track', async (ev) => {
       const remoteStream = ev.streams;
       console.log('GOT TRACKS!!');
+
       setRemoteStream(remoteStream[0]);
     });
+
   }, []);
 
   useEffect(() => {
@@ -116,22 +121,22 @@ const RoomPage = () => {
   return (
     <SafeAreaView style={styles.container}>
     <Text>{roomId}</Text>
-    <View>{remoteSocketId ? 'Connected' : 'No one in room'}</View>
-      {myStream && <Button onClick={sendStreams}>Send Stream</Button>}
-      {remoteSocketId && <Button onClick={handleCallUser}>CALL</Button>}
+    <Text>{remoteSocketId ? 'Connected' : 'No one in room'}</Text>
+      {myStream && <Button onPress={sendStreams} title="Send Stream" />}
+      {remoteSocketId && <Button onPress={handleCallUser} title="Call kar" />}
 
 
           <View style={styles.videoContainer}>
             {remoteStream && (
               <RTCView
-                streamURL={remoteStream}
+                streamURL={remoteStream.toURL()}
                 style={styles.remoteVideo}
               />
             )}
             {/* Local Video Stream */}
             {myStream && (
               <RTCView
-                streamURL={myStream}
+                streamURL={myStream.toURL()}
                 style={styles.localVideo}
               />
             )}
