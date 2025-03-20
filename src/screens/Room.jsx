@@ -94,6 +94,10 @@ const RoomPage = () => {
     });
 
   }, []);
+  console.log("Audio Tracks:", myStream?.getAudioTracks());
+  console.log("Remote Audio Tracks:", remoteStream?.getAudioTracks());
+
+  
 
   useEffect(() => {
     socket.on('user:joined', handleUserJoined);
